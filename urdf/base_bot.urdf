@@ -1,0 +1,164 @@
+<?xml version="1.0"?>
+<robot name="roomba" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <!-- 机器人主体 -->
+  <link name="base_link">
+    <visual>
+      <geometry>
+        <cylinder radius="0.15" length="0.055"/> <!-- 圆盘主体，半径 15cm，高 5.5cm -->
+      </geometry>
+      <material name="light_black"/>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder radius="0.14" length="0.055"/> <!-- 减小半径，避免和轮子重叠 -->
+      </geometry>
+    </collision>
+    <!-- 添加惯性属性 -->
+    <inertial>
+      <mass value="2.0"/> <!-- 质量，2kg，调整为合适的值 -->
+      <inertia ixx="0.002" ixy="0" ixz="0" iyy="0.002" iyz="0" izz="0.002"/> <!-- 惯性矩阵 -->
+    </inertial>
+  </link>
+
+  <!-- 主控电脑 -->
+  <link name="computer_link">
+    <visual>
+      <geometry>
+        <box size="0.06 0.1 0.03"/> <!-- 主控电脑，宽 6cm，长 10cm，高 3cm -->
+      </geometry>
+      <material name="blue"/>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="0.06 0.1 0.03"/>
+      </geometry>
+    </collision>
+    <!-- 添加惯性属性 -->
+    <inertial>
+      <mass value="0.5"/> <!-- 质量，0.5kg，调整为合适的值 -->
+      <inertia ixx="0.0001" ixy="0" ixz="0" iyy="0.0001" iyz="0" izz="0.0001"/>
+    </inertial>
+  </link>
+
+  <joint name="computer_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="computer_link"/>
+    <origin xyz="-0.05 0 0.04" rpy="0 0 1.57"/> <!-- 主控电脑放在主体的上方 -->
+  </joint>
+
+  <!-- 雷达 -->
+  <link name="lidar_link">
+    <visual>
+      <geometry>
+        <box size="0.055 0.055 0.04"/> <!-- 雷达，长宽 5.5cm，高 4cm -->
+      </geometry>
+      <material name="dark"/>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="0.055 0.055 0.04"/>
+      </geometry>
+    </collision>
+    <!-- 添加惯性属性 -->
+    <inertial>
+      <mass value="0.2"/> <!-- 雷达质量，0.2kg -->
+      <inertia ixx="0.00001" ixy="0" ixz="0" iyy="0.00001" iyz="0" izz="0.00001"/>
+    </inertial>
+  </link>
+
+  <joint name="lidar_joint" type="fixed">
+    <parent link="computer_link"/>
+    <child link="lidar_link"/>
+    <origin xyz="0 0 0.035" rpy="0 0 0"/> <!-- 雷达放置在主控电脑的上方 -->
+  </joint>
+
+  <!-- 左轮 -->
+  <link name="left_wheel_link">
+    <visual>
+      <geometry>
+        <cylinder radius="0.026" length="0.02"/> <!-- 左轮，半径 2.6cm，宽度 2cm -->
+      </geometry>
+      <material name="black"/>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder radius="0.026" length="0.02"/>
+      </geometry>
+      <origin xyz="0 0 0.01"/> <!-- 抬高轮子的位置，避免和底盘重叠 -->
+    </collision>
+    <!-- 添加惯性属性 -->
+    <inertial>
+      <mass value="0.1"/> <!-- 轮子质量，0.1kg -->
+      <inertia ixx="0.0001" ixy="0" ixz="0" iyy="0.0001" iyz="0" izz="0.0001"/>
+    </inertial>
+  </link>
+
+  <!-- 右轮 -->
+  <link name="right_wheel_link">
+    <visual>
+      <geometry>
+        <cylinder radius="0.026" length="0.02"/> <!-- 右轮，半径 2.6cm，宽度 2cm -->
+      </geometry>
+      <material name="black"/>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder radius="0.026" length="0.02"/>
+      </geometry>
+      <origin xyz="0 0 0.01"/> <!-- 抬高轮子的位置，避免和底盘重叠 -->
+    </collision>
+    <!-- 添加惯性属性 -->
+    <inertial>
+      <mass value="0.1"/> <!-- 轮子质量，0.1kg -->
+      <inertia ixx="0.0001" ixy="0" ixz="0" iyy="0.0001" iyz="0" izz="0.0001"/>
+    </inertial>
+  </link>
+
+  <!-- 左轮与基座的连接 -->
+  <joint name="left_wheel_joint" type="revolute">
+    <parent link="base_link"/>
+    <child link="left_wheel_link"/>
+    <origin xyz="-0.035 0.1 -0.01" rpy="1.57 0 0"/> <!-- 左轮放置位置，调整至底盘下方 -->
+    <axis xyz="0 0 1"/>
+  </joint>
+
+  <!-- 右轮与基座的连接 -->
+  <joint name="right_wheel_joint" type="revolute">
+    <parent link="base_link"/>
+    <child link="right_wheel_link"/>
+    <origin xyz="-0.035 -0.1 -0.01" rpy="1.57 0 0"/> <!-- 右轮放置位置，调整至底盘下方 -->
+    <axis xyz="0 0 1"/>
+  </joint>
+
+  <!-- 被动导向轮 -->
+  <link name="caster_wheel_link">
+    <visual>
+      <geometry>
+        <cylinder radius="0.015" length="0.02"/> <!-- 被动导向轮，半径 1.5cm，宽度 2cm -->
+      </geometry>
+      <material name="black"/>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder radius="0.015" length="0.02"/>
+      </geometry>
+    </collision>
+    <!-- 添加惯性属性 -->
+    <inertial>
+      <mass value="0.05"/> <!-- 被动导向轮质量，0.05kg -->
+      <inertia ixx="0.00001" ixy="0" ixz="0" iyy="0.00001" iyz="0" izz="0.00001"/>
+    </inertial>
+  </link>
+
+  <!-- 被动导向轮与基座的连接 -->
+  <joint name="caster_wheel_joint" type="revolute">
+    <parent link="base_link"/>
+    <child link="caster_wheel_link"/>
+    <origin xyz="0.11 0 -0.021" rpy="1.57 0 0"/> <!-- 被动导向轮放置在底盘的前方 -->
+    <axis xyz="0 1 0"/> <!-- 被动导向轮围绕垂直轴旋转 -->
+    <limit lower="0" upper="0" effort="10" velocity="1.0"/>
+  </joint>
+
+</robot>
+

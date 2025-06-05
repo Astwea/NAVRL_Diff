@@ -1,0 +1,16 @@
+torch==2.6.0
+torchvision==0.21.0
+gym==0.26.2
+gymnasium==1.1.1
+numpy==1.26.4
+matplotlib==3.5.1
+wandb==0.19.9
+scipy==1.15.2
+scikit-image==0.25.2
+scikit-video==1.1.11
+seaborn==0.13.2
+tqdm==4.67.1
+tensorboard==2.19.0
+opencv-contrib-python-headless==4.11.0.86
+opencv-python==4.11.0.86
+
